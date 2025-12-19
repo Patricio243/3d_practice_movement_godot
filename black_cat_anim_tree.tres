@@ -1,0 +1,71 @@
+[gd_resource type="AnimationNodeStateMachine" load_steps=15 format=3 uid="uid://cxr0ps222atvl"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_gf1ix"]
+animation = &"HANDS_TIED"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_x46l8"]
+animation = &"IDLE"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pmi2h"]
+animation = &"LEGS_TIED"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fpf1d"]
+animation = &"SIT_TIED"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8q536"]
+animation = &"WALK"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gf1ix"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pmi2h"]
+advance_mode = 2
+advance_condition = &"is_moving"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_h8i6a"]
+advance_mode = 2
+advance_condition = &"is_stading"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dqnoi"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"is_hands_tied"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1v35q"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"is_legs_tied"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ys8nj"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"is_sit_tied"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w60nx"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"free"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bvpng"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"free"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_188yn"]
+switch_mode = 1
+advance_mode = 2
+advance_condition = &"free"
+
+[resource]
+states/HANDS_TIED/node = SubResource("AnimationNodeAnimation_gf1ix")
+states/HANDS_TIED/position = Vector2(282, 198)
+states/IDLE/node = SubResource("AnimationNodeAnimation_x46l8")
+states/IDLE/position = Vector2(348, 88)
+states/LEGS_TIED/node = SubResource("AnimationNodeAnimation_pmi2h")
+states/LEGS_TIED/position = Vector2(421, 198)
+states/SIT_TIED/node = SubResource("AnimationNodeAnimation_fpf1d")
+states/SIT_TIED/position = Vector2(556, 198)
+states/Start/position = Vector2(117, 88)
+states/WALK/node = SubResource("AnimationNodeAnimation_8q536")
+states/WALK/position = Vector2(606, 88)
+transitions = ["Start", "IDLE", SubResource("AnimationNodeStateMachineTransition_gf1ix"), "IDLE", "WALK", SubResource("AnimationNodeStateMachineTransition_pmi2h"), "WALK", "IDLE", SubResource("AnimationNodeStateMachineTransition_h8i6a"), "IDLE", "HANDS_TIED", SubResource("AnimationNodeStateMachineTransition_dqnoi"), "IDLE", "LEGS_TIED", SubResource("AnimationNodeStateMachineTransition_1v35q"), "IDLE", "SIT_TIED", SubResource("AnimationNodeStateMachineTransition_ys8nj"), "HANDS_TIED", "IDLE", SubResource("AnimationNodeStateMachineTransition_w60nx"), "LEGS_TIED", "IDLE", SubResource("AnimationNodeStateMachineTransition_bvpng"), "SIT_TIED", "IDLE", SubResource("AnimationNodeStateMachineTransition_188yn")]

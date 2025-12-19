@@ -1,0 +1,117 @@
+[gd_resource type="AnimationNodeStateMachine" load_steps=24 format=3 uid="uid://bg18tsby6rwq2"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_x46l8"]
+animation = &"WALK"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8q536"]
+animation = &"HANDS_TIED"
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_gf1ix"]
+filter_enabled = true
+filters = ["Armature/Skeleton3D:bc_Elbow_L", "Armature/Skeleton3D:bc_Elbow_R", "Armature/Skeleton3D:bc_Shoulder_L", "Armature/Skeleton3D:bc_Shoulder_R"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_pmi2h"]
+graph_offset = Vector2(-612.9322, -8.8302765)
+nodes/Blend2/node = SubResource("AnimationNodeBlend2_gf1ix")
+nodes/Blend2/position = Vector2(-100, 100)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_8q536")
+nodes/Animation/position = Vector2(-380, 300)
+"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_x46l8")
+"nodes/Animation 2/position" = Vector2(-380, 20)
+node_connections = [&"output", 0, &"Blend2", &"Blend2", 0, &"Animation 2", &"Blend2", 1, &"Animation"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fpf1d"]
+animation = &"IDLE"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pmi2h"]
+animation = &"LEGS_M_TIED"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_h8i6a"]
+animation = &"WALK"
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_07x01"]
+filter_enabled = true
+filters = ["Armature/Skeleton3D:bc_Ankle_L", "Armature/Skeleton3D:bc_Ankle_R", "Armature/Skeleton3D:bc_Hip_L", "Armature/Skeleton3D:bc_Hip_R", "Armature/Skeleton3D:bc_Knee_L", "Armature/Skeleton3D:bc_Knee_R", "Armature/Skeleton3D:bc_Root_M"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_x46l8"]
+graph_offset = Vector2(-598.3611, 21.02063)
+nodes/output/position = Vector2(240, 80)
+"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_pmi2h")
+"nodes/Animation 2/position" = Vector2(-240, 360)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_h8i6a")
+nodes/Animation/position = Vector2(-240, 100)
+nodes/Blend2/node = SubResource("AnimationNodeBlend2_07x01")
+nodes/Blend2/position = Vector2(0, 140)
+node_connections = [&"output", 0, &"Blend2", &"Blend2", 0, &"Animation", &"Blend2", 1, &"Animation 2"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1v35q"]
+animation = &"HANDS_TIED"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ys8nj"]
+animation = &"SIT_TIED"
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_w60nx"]
+filter_enabled = true
+filters = ["Armature/Skeleton3D:bc_Elbow_L", "Armature/Skeleton3D:bc_Elbow_R", "Armature/Skeleton3D:bc_Shoulder_L", "Armature/Skeleton3D:bc_Shoulder_R"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_8q536"]
+graph_offset = Vector2(-509, 8)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_ys8nj")
+nodes/Animation/position = Vector2(-262.07394, 120.05621)
+"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_1v35q")
+"nodes/Animation 2/position" = Vector2(-471.44025, 279.64313)
+nodes/Blend2/node = SubResource("AnimationNodeBlend2_w60nx")
+nodes/Blend2/position = Vector2(55.635807, 131.76901)
+node_connections = [&"output", 0, &"Blend2", &"Blend2", 0, &"Animation", &"Blend2", 1, &"Animation 2"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_gf1ix"]
+animation = &"WALK"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_h8i6a"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pmi2h"]
+advance_mode = 2
+advance_condition = &"is_moving"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fpf1d"]
+advance_mode = 2
+advance_condition = &"is_standing"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_x46l8"]
+advance_mode = 2
+advance_condition = &"is_hands_tied"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8q536"]
+advance_mode = 2
+advance_condition = &"is_free"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gf1ix"]
+advance_mode = 2
+advance_condition = &"is_legs_tied"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dqnoi"]
+advance_mode = 2
+advance_condition = &"is_free"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1v35q"]
+advance_mode = 2
+advance_condition = &"is_sit_tied"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ys8nj"]
+advance_mode = 2
+advance_condition = &"is_free"
+
+[resource]
+states/HANDS_TIED/node = SubResource("AnimationNodeBlendTree_pmi2h")
+states/HANDS_TIED/position = Vector2(161, 192)
+states/IDLE/node = SubResource("AnimationNodeAnimation_fpf1d")
+states/IDLE/position = Vector2(312, 100)
+states/LEGS_TIED/node = SubResource("AnimationNodeBlendTree_x46l8")
+states/LEGS_TIED/position = Vector2(312, 236)
+states/SIT_TIED/node = SubResource("AnimationNodeBlendTree_8q536")
+states/SIT_TIED/position = Vector2(483, 200)
+states/WALK/node = SubResource("AnimationNodeAnimation_gf1ix")
+states/WALK/position = Vector2(443, 92)
+transitions = ["Start", "IDLE", SubResource("AnimationNodeStateMachineTransition_h8i6a"), "IDLE", "WALK", SubResource("AnimationNodeStateMachineTransition_pmi2h"), "WALK", "IDLE", SubResource("AnimationNodeStateMachineTransition_fpf1d"), "IDLE", "HANDS_TIED", SubResource("AnimationNodeStateMachineTransition_x46l8"), "HANDS_TIED", "IDLE", SubResource("AnimationNodeStateMachineTransition_8q536"), "IDLE", "LEGS_TIED", SubResource("AnimationNodeStateMachineTransition_gf1ix"), "LEGS_TIED", "IDLE", SubResource("AnimationNodeStateMachineTransition_dqnoi"), "IDLE", "SIT_TIED", SubResource("AnimationNodeStateMachineTransition_1v35q"), "SIT_TIED", "IDLE", SubResource("AnimationNodeStateMachineTransition_ys8nj")]
+graph_offset = Vector2(-71, 83)
