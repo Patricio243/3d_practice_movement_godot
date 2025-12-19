@@ -18,8 +18,6 @@ class_name Player
 @onready var visuals = $Armature
 @onready var animation_tree = $AnimationTree
 @onready var canvas_layer: CanvasLayer = $"../CanvasLayer"
-# Acceso directo a la máquina de estados de animaciones para 'travel'
-#@onready var state_machine = animation_tree.get("parameters/playback")
 
 # Acceso a la máquina de estados que está DENTRO del BlendTree
 @onready var locomotion_sm = animation_tree.get("parameters/Locomotion/playback")
@@ -28,7 +26,7 @@ var hands_tied_weight = 0.0
 var sit_weight = 0.0
 
 # --- ESTADOS DEL PERSONAJE ---
-enum State { NORMAL, HANDS_TIED, LEGS_TIED, SIT_TIED, LEGS_TIED_WALK }
+enum State { NORMAL, HANDS_TIED,ANKLE_TIED, LEGS_TIED, KNEE_TIED, SIT_TIED, LEGS_TIED_WALK, STRUGGLE }
 var current_state: State = State.NORMAL
 
 # Gravedad del proyecto
@@ -65,7 +63,7 @@ func _unhandled_input(event):
 			canvas_layer.visible = false
 	
 	# Liberarse
-	if event.is_action_pressed("ui_accept"): # Espacio o Botón A
+	if event.is_action_pressed("ui_e"): # Espacio o Botón A
 		struggle.perform_struggle()
 
 
@@ -75,16 +73,16 @@ func get_movement_modifiers() -> Dictionary:
 	var rotation_control = 1.0
 	
 	# --- PIERNAS ---
-	if restrains.active_restraints.has("ankle_rope"):
+	if restrains.active_restraints.has("RopeAnkle"):
 		speed_multiplier *= 0.3 # Reduce al 30%
 		can_jump = false
 	
-	if restrains.active_restraints.has("knee_rope"):
+	if restrains.active_restraints.has("RopeKnee"):
 		speed_multiplier *= 0.5 # Se acumula multiplicativamente
 		can_jump = false
 		
 	# --- ACCESORIOS ---
-	if restrains.active_restraints.has("blindfold"):
+	if restrains.active_restraints.has("Blindfold"):
 		# Si está ciega, se mueve con cautela
 		speed_multiplier *= 0.8 
 		rotation_control = 0.5 # Gira más lento
@@ -96,6 +94,31 @@ func get_movement_modifiers() -> Dictionary:
 	
 	return { "speed": speed_multiplier, "jump": can_jump, "rot": rotation_control }
 
+func refresh_state():
+	# 1. Comprobamos si quedan ataduras críticas
+	var has_wrists = restrains.active_restraints.has("RopeWrists")
+	var has_ankles = restrains.active_restraints.has("RopeAnkle")
+	var has_knees = restrains.active_restraints.has("RopeKnee")
+	
+	# 2. Decidimos el estado según prioridad
+	# (Aquí puedes ajustar la lógica si quieres que SIT_TIED sea especial)
+	
+	if has_ankles or has_knees:
+		# Si tiene ataduras en las piernas, pasamos a estado de piernas atadas
+		# (Nota: Si estaba sentado, quizás quieras mantenerlo sentado hasta que se libere todo, 
+		#  pero por ahora simplifiquemos a que intente pararse si puede).
+		if current_state != State.SIT_TIED: 
+			current_state = State.LEGS_TIED
+	elif has_wrists:
+		# Si solo tiene manos atadas
+		current_state = State.HANDS_TIED
+	else:
+		# Si no hay ataduras mayores, es libre
+		current_state = State.NORMAL
+
+	# 3. Forzar actualización visual inmediata si es necesario
+	armature.update_visuals()
+
 func _physics_process(delta):
 	var mods = get_movement_modifiers()
 	
@@ -103,25 +126,32 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	
-	# 2. Determinar velocidad actual según estado
-	var current_speed:float = speed_normal * mods["speed"]
+	# 2. Determinar velocidad BASE según estado
+	var base_speed: float = speed_normal
 	var can_jump = false
 	
 	match current_state:
 		State.NORMAL:
-			current_speed = speed_normal
+			base_speed = speed_normal
 			can_jump = true
 		State.HANDS_TIED:
-			current_speed = speed_normal # Puede correr, pero con manos atadas
+			base_speed = speed_normal 
 			can_jump = true
 		State.LEGS_TIED:
-			current_speed = speed_tied_legs # Movimiento muy lento o saltitos
-			can_jump = false # O quizás true si quieres que salte con pies juntos
+			base_speed = speed_tied_legs
+			can_jump = false 
 		State.SIT_TIED:
-			current_speed = 0.0 # Inmóvil
+			base_speed = 0.0 
 			can_jump = false
 
-	# 3. Salto
+	# 3. Aplicar modificadores de restricciones a la velocidad base
+	var current_speed = base_speed * mods["speed"]
+	
+	# Si los modificadores prohíben saltar (ej. ataduras en piernas), anulamos el salto
+	if mods["jump"] == false:
+		can_jump = false
+
+	# 4. Salto (resto del código igual...)
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor() and can_jump:
 		velocity.y = jump_velocity
 
@@ -194,18 +224,18 @@ func update_animations(input_dir):
 
 func set_state_tied_hands():
 	current_state = State.HANDS_TIED
-	restrains.active_restraints["RopeWrists"] = 10
+	struggle.add_restraint(Accessories.ROPEWRISTS)
 	armature.update_visuals()
 
 func set_state_tied_legs():
 	current_state = State.LEGS_TIED
-	restrains.active_restraints["RopeAnkle"] = 10
+	struggle.add_restraint(Accessories.ROPEANKLE)
 	armature.update_visuals()
 
 func set_state_sit_tied():
 	current_state = State.SIT_TIED
-	restrains.active_restraints["RopeWrists"] = 10
-	restrains.active_restraints["RopeAnkle"] = 10
+	struggle.add_restraint(Accessories.ROPEWRISTS)
+	struggle.add_restraint(Accessories.ROPEANKLE)
 	armature.update_visuals()
 
 func set_state_free():

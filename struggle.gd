@@ -4,15 +4,12 @@ class_name Struggle
 @onready var restrains: Restrains = $"../Restrains"
 @onready var animation_tree: AnimationTree = $"../AnimationTree"
 @onready var armature: Visuals = $"../Armature"
-
+@onready var player = $".."
 
 # Configuración
 @export var struggle_power: float = 2.0
 var is_struggling = false
 
-func _unhandled_input(event):
-	if event.is_action_pressed("ui_accept"): # Espacio o Botón A
-		perform_struggle()
 
 func perform_struggle():
 	if restrains.active_restraints.is_empty():
@@ -37,8 +34,12 @@ func perform_struggle():
 func break_restraint(item_name):
 	restrains.active_restraints.erase(item_name)
 	armature.update_visuals()
-	# Sonido de cuerda rompiéndose o hebilla abriéndose
+	
 	print("Se ha liberado de: " + item_name)
+	
+	# AGREGAR ESTO: Avisar al jugador que recalcule su estado
+	if player.has_method("refresh_state"):
+		player.refresh_state()
 
 # Función para añadir restricciones desde el exterior (enemigos/trampas)
 func add_restraint(item_name):

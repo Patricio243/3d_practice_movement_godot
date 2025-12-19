@@ -5,12 +5,12 @@ class_name Visuals
 @onready var restrains: Restrains = $"../Restrains"
 
 var children:Dictionary = {
-	"Blindfold":null,
-	"Ballgag":null,
-	"RopeElbow":null,
-	"RopeWrists":null,
-	"RopeKnee":null,
-	"RopeAnkle":null
+	Accessories.BLINDFORLD:null,
+	Accessories.BALLGAG:null,
+	Accessories.ROPEELBOW:null,
+	Accessories.ROPEWRISTS:null,
+	Accessories.ROPEKNEE:null,
+	Accessories.ROPEANKLE:null
 }
 
 func _ready() -> void:
