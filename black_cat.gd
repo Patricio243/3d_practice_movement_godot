@@ -73,21 +73,21 @@ func get_movement_modifiers() -> Dictionary:
 	var rotation_control = 1.0
 	
 	# --- PIERNAS ---
-	if restrains.active_restraints.has("RopeAnkle"):
+	if restrains.active_restraints.has(Accessories.ROPEANKLE):
 		speed_multiplier *= 0.3 # Reduce al 30%
 		can_jump = false
 	
-	if restrains.active_restraints.has("RopeKnee"):
+	if restrains.active_restraints.has(Accessories.ROPEKNEE):
 		speed_multiplier *= 0.5 # Se acumula multiplicativamente
 		can_jump = false
 		
 	# --- ACCESORIOS ---
-	if restrains.active_restraints.has("Blindfold"):
+	if restrains.active_restraints.has(Accessories.BLINDFORLD):
 		# Si está ciega, se mueve con cautela
 		speed_multiplier *= 0.8 
 		rotation_control = 0.5 # Gira más lento
 		
-	if restrains.active_restraints.has("vibrator"):
+	if restrains.active_restraints.has(Accessories.VIBRATOR):
 		# Efecto aleatorio de temblor o parada repentina
 		if randf() < 0.01: # 1% de chance cada frame
 			speed_multiplier = 0.0 # Se detiene por el estímulo
@@ -96,9 +96,9 @@ func get_movement_modifiers() -> Dictionary:
 
 func refresh_state():
 	# 1. Comprobamos si quedan ataduras críticas
-	var has_wrists = restrains.active_restraints.has("RopeWrists")
-	var has_ankles = restrains.active_restraints.has("RopeAnkle")
-	var has_knees = restrains.active_restraints.has("RopeKnee")
+	var has_wrists = restrains.active_restraints.has(Accessories.ROPEWRISTS)
+	var has_ankles = restrains.active_restraints.has(Accessories.ROPEANKLE)
+	var has_knees = restrains.active_restraints.has(Accessories.ROPEKNEE)
 	
 	# 2. Decidimos el estado según prioridad
 	# (Aquí puedes ajustar la lógica si quieres que SIT_TIED sea especial)
@@ -160,7 +160,7 @@ func _physics_process(delta):
 	var input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	var direction = (camera_pivot.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
-	if direction and current_speed > 0:
+	if direction and current_speed > 0 and not struggle.is_struggling:
 		velocity.x = direction.x * current_speed
 		velocity.z = direction.z * current_speed
 		
@@ -182,15 +182,15 @@ func update_animations(input_dir):
 	# 1. CONTROL DEL MOVIMIENTO BASE (PIERNAS)
 	# Si las piernas están atadas, forzamos la animación de saltitos/pasos cortos
 	if current_state == State.LEGS_TIED:
-		locomotion_sm.travel("LEGS_TIED_WALK") # Asegúrate de crear este nodo en la SM
+		locomotion_sm.travel(AnimResource.ANKLE) # Asegúrate de crear este nodo en la SM
 	elif current_state == State.SIT_TIED:
-		locomotion_sm.travel("IDLE") # No importa mucho, el SitOverride lo tapará
+		locomotion_sm.travel(AnimResource.IDLE) # No importa mucho, el SitOverride lo tapará
 	else:
 		# Estado NORMAL o HANDS_TIED (las piernas funcionan igual)
 		if input_dir.length() > 0:
-			locomotion_sm.travel("WALK")
+			locomotion_sm.travel(AnimResource.WALK)
 		else:
-			locomotion_sm.travel("IDLE")
+			locomotion_sm.travel(AnimResource.IDLE)
 
 	# 2. CONTROL DE LAS MEZCLAS (CAPAS)
 	

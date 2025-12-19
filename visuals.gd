@@ -10,7 +10,9 @@ var children:Dictionary = {
 	Accessories.ROPEELBOW:null,
 	Accessories.ROPEWRISTS:null,
 	Accessories.ROPEKNEE:null,
-	Accessories.ROPEANKLE:null
+	Accessories.ROPEANKLE:null,
+	Accessories.COLLAR:null,
+	Accessories.VIBRATOR:null
 }
 
 func _ready() -> void:

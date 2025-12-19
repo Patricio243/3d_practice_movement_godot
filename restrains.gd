@@ -17,4 +17,4 @@ const RESTRAINT_DATA = {
 }
 
 # Estado actual: { "nombre_item": vida_actual }
-var active_restraints:Dictionary = {"Blindfold":7}
+var active_restraints:Dictionary = {"Vibrator":7}

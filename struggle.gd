@@ -12,9 +12,11 @@ var is_struggling = false
 
 
 func perform_struggle():
-	if restrains.active_restraints.is_empty():
+	if restrains.active_restraints.is_empty() or is_struggling:
 		return
-
+	
+	is_struggling = true
+	
 	# Animación de forcejeo
 	animation_tree.set("parameters/OneShotStruggle/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 	
@@ -47,3 +49,8 @@ func add_restraint(item_name):
 		var max_hp = restrains.RESTRAINT_DATA[item_name]["difficulty"]
 		restrains.active_restraints[item_name] = max_hp
 		armature.update_visuals()
+
+
+func _on_animation_tree_animation_finished(anim_name: StringName) -> void:
+	if anim_name == "STRUGGLE":
+		is_struggling = false
