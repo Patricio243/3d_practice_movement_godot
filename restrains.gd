@@ -3,7 +3,7 @@ class_name Restrains
 
 # Configuración de dificultad de escape (HP de la atadura)
 const RESTRAINT_DATA = {
-	Accessories.BLINDFORLD: { "difficulty": 10.0, "type": "accessory" },
+	Accessories.BLINDFOLD: { "difficulty": 10.0, "type": "accessory" },
 	Accessories.BALLGAG:   { "difficulty": 15.0, "type": "accessory" },
 	
 	Accessories.COLLAR:    { "difficulty": 50.0, "type": "hard" },     # Difícil de quitar
@@ -17,4 +17,4 @@ const RESTRAINT_DATA = {
 }
 
 # Estado actual: { "nombre_item": vida_actual }
-var active_restraints:Dictionary = {"Vibrator":7}
+var active_restraints:Dictionary = {Accessories.VIBRATOR:7}

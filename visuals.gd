@@ -5,7 +5,7 @@ class_name Visuals
 @onready var restrains: Restrains = $"../Restrains"
 
 var children:Dictionary = {
-	Accessories.BLINDFORLD:null,
+	Accessories.BLINDFOLD:null,
 	Accessories.BALLGAG:null,
 	Accessories.ROPEELBOW:null,
 	Accessories.ROPEWRISTS:null,

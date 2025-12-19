@@ -12,3 +12,6 @@ const ANKLE:String = "ANKLE_TIED"
 
 const STRUGGLE:String = "STRUGGLE"
 const SIT:String = "SIT_TIED"
+
+const MOAN:String = "MOAN"
+const VIBRATOR:String = "VIBRATOR"

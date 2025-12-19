@@ -82,7 +82,7 @@ func get_movement_modifiers() -> Dictionary:
 		can_jump = false
 		
 	# --- ACCESORIOS ---
-	if restrains.active_restraints.has(Accessories.BLINDFORLD):
+	if restrains.active_restraints.has(Accessories.BLINDFOLD):
 		# Si está ciega, se mueve con cautela
 		speed_multiplier *= 0.8 
 		rotation_control = 0.5 # Gira más lento
@@ -179,20 +179,48 @@ func _physics_process(delta):
 
 
 func update_animations(input_dir):
-	# 1. CONTROL DEL MOVIMIENTO BASE (PIERNAS)
-	# Si las piernas están atadas, forzamos la animación de saltitos/pasos cortos
-	if current_state == State.LEGS_TIED:
-		locomotion_sm.travel(AnimResource.ANKLE) # Asegúrate de crear este nodo en la SM
+	# 1. PIERNAS (State Machine)
+	# Mantenemos tu lógica actual, funciona perfecto para cambios de física.
+	if restrains.active_restraints.has(Accessories.ROPEKNEE):
+		locomotion_sm.travel(AnimResource.KNEE) # Asumiendo que creaste KNEE en AnimResource
+	elif restrains.active_restraints.has(Accessories.ROPEANKLE):
+		locomotion_sm.travel(AnimResource.ANKLE)
 	elif current_state == State.SIT_TIED:
-		locomotion_sm.travel(AnimResource.IDLE) # No importa mucho, el SitOverride lo tapará
+		locomotion_sm.travel(AnimResource.IDLE)
 	else:
-		# Estado NORMAL o HANDS_TIED (las piernas funcionan igual)
 		if input_dir.length() > 0:
 			locomotion_sm.travel(AnimResource.WALK)
 		else:
 			locomotion_sm.travel(AnimResource.IDLE)
 
-	# 2. CONTROL DE LAS MEZCLAS (CAPAS)
+	# 2. BRAZOS (Selector + Blend)
+	var target_hands_weight = 0.0
+	var arm_style = 0 # 0: Nada, 1: Wrists, 2: Elbows
+	
+	if restrains.active_restraints.has(Accessories.ROPEELBOW):
+		target_hands_weight = 1.0
+		arm_style = 2 # Índice para Codos en el Transition
+	elif restrains.active_restraints.has(Accessories.ROPEWRISTS):
+		target_hands_weight = 1.0
+		arm_style = 1 # Índice para Muñecas en el Transition
+	
+	# 3. VIBRADOR (Additive)
+	var vibe_amount = 0.0
+	if restrains.active_restraints.has(Accessories.VIBRATOR):
+		# Puedes usar un seno para que la intensidad suba y baje
+		vibe_amount = 0.5 + sin(Time.get_ticks_msec() * 0.01) * 0.2
+	
+	# 4. APLICAR VALORES
+	hands_tied_weight = lerp(hands_tied_weight, target_hands_weight, 0.1)
+	
+	# Parámetros del Tree
+	animation_tree.set("parameters/ArmBlend/blend_amount", hands_tied_weight)
+	
+	# ¡OJO! Los nodos Transition usan "current" (int) para cambiar
+	animation_tree.set("parameters/ArmSelector/current", arm_style)
+	
+	# Vibración
+	animation_tree.set("parameters/VibeAdd/add_amount", vibe_amount)
 	
 	# ¿Tenemos las manos atadas? (Aplica para HANDS_TIED, LEGS_TIED y SIT_TIED si quieres)
 	var target_hands = 0.0

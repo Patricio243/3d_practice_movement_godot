@@ -1,7 +1,7 @@
 extends Resource
 class_name Accessories
 
-const BLINDFORLD:String = "Blindfold"
+const BLINDFOLD:String = "Blindfold"
 const BALLGAG:String = "Ballgag"
 
 const ROPEELBOW:String = "RopeElbow"
